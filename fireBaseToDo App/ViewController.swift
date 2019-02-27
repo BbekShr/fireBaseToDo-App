@@ -11,6 +11,8 @@ import Firebase
 import FirebaseAuth
 import FirebaseUI
 
+var userEmail = ""
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var emailTextField: UITextField!
@@ -22,17 +24,13 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-         
-        
         ref = Database.database().reference()
         
         if Auth.auth().currentUser != nil {
-            ref?.child("games").child("1").setValue(["name":"first","score":10])
+        print("Login Successful")
         }
     }
     
-
     @IBAction func loginButton(_ sender: Any) {
         if Auth.auth().currentUser == nil {
             if let email = emailTextField.text, let password = passwordTextField.text {
@@ -40,6 +38,7 @@ class ViewController: UIViewController {
                 Auth.auth().signIn(withEmail: email, password: password, completion: { (user, error ) in
                     if error == nil {
                         self.loginButtonOutlet.setTitle("Logout", for: .normal)
+                        userEmail = (Auth.auth().currentUser?.uid)!
                         self.performSegue(withIdentifier: "homeScreenSegue", sender: nil)
                     }
                 })
@@ -60,9 +59,6 @@ class ViewController: UIViewController {
             Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
                print(user ?? "no email")
                 print(Auth.auth().currentUser?.uid ?? "no user id")
-                
-                
-                
             }
         }
         
